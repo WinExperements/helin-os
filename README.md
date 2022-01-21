@@ -12,4 +12,5 @@ Current list of features and released components:
 - [ ] Multitasking
 - [ ] Module Loading
 - [ ] Multiboot structure loading
+# Contacts
 Telegram channel - https://t.me/helinOSChannel
