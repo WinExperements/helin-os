@@ -14,3 +14,6 @@ Current list of features and released components:
 - [ ] Multiboot structure loading
 # Contacts
 Telegram channel - https://t.me/helinOSChannel
+
+# Project status
+Currently project halted, but i am returned to this project, but not now :)
