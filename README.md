@@ -12,8 +12,6 @@ Current list of features and released components:
 - [x] Multitasking(Bredan's multitasking see osdev wiki)
 - [ ] Module Loading
 - [x] Multiboot structure loading
-# Contacts
-Telegram channel - https://t.me/helinOSChannel
 
 # How to build?
 First install the gcc cross-compiler,nasm,grub-common(if need to make an iso), then just fix paths word if you don't use Windows, some cross-compiller names and type "make"
