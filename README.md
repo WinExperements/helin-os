@@ -8,12 +8,19 @@ Currently i implement microkernel for this operation system, because it's easily
 Current list of features and released components:
 - [x] Global description table
 - [x] Interrupts
-- [x] Memory Management
-- [ ] Multitasking
+- [x] Memory Management, PMM
+- [x] Multitasking(Bredan's multitasking see osdev wiki)
 - [ ] Module Loading
-- [ ] Multiboot structure loading
+- [x] Multiboot structure loading
 # Contacts
 Telegram channel - https://t.me/helinOSChannel
 
-# Project status
-Currently project halted, but i am returned to this project, but not now :)
+# How to build?
+First install the gcc cross-compiler,nasm,grub-common(if need to make an iso), then just fix paths word if you don't use Windows, some cross-compiller names and type "make"
+# Bad news
+- The Operation System may didn't support virtual memory and x86_64 CPU
+- Doesn't support EFI(GRUB problems)
+# TODO
+- Syscall interface
+- User mode
+- Module and user program loading
