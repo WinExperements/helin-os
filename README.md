@@ -17,7 +17,7 @@ Current list of features and released components:
 
 # How to build?
 - Install any cross-compiler
-- If you don't use Windows, then replace all '\' to '/' in Makefile
+- If you don't use Windows, then replace all '\\' to '/' in Makefile
 - Type "make" or if you use Windows, type "mingw32-make"
 # Bad news
 - The Operation System may didn't support virtual memory and x86_64 CPU
