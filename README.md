@@ -14,6 +14,7 @@ Current list of features and released components:
 - [x] Multiboot structure loading
 - [x] User space [in this file](arch/x86/gdtfl.asm)
 - [x] Keyboard driver in user space
+- [x] Working syscall interface, bugs see in [TODO](#TODO)
 
 # How to build?
 - Install any cross-compiler

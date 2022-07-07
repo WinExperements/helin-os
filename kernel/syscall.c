@@ -1,6 +1,8 @@
 #include <syscall.h>
 #include <interrupts.h>
 #include <terminal.h>
-void syscall_handler(registers_t *regs) {
-	printf((char *)regs->ebx);
+void syscall_handler(int eax,int ebx) {
+	if (eax == 1) {
+		printf((char *)ebx);
+	}
 }

@@ -148,14 +148,19 @@ syscall_irq:
   push fs
   push gs
   pusha
+  push eax
+  push ebx
   mov ax, 0x10  ; load the kernel data segment descriptor
   mov ds, ax
   mov es, ax
   mov fs, ax
   mov gs, ax
-  push esp
+  pop ebx
+  pop eax
+  push ebx
+  push eax
 	call syscall_handler
-  add esp,4
+  add esp,8
   popa
   pop gs
   pop fs

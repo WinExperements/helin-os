@@ -55,7 +55,7 @@ extern void kernel_main(struct multiboot_info *multiboot,uint32_t magic) {
 	asm volatile("mov %%esp, %0" : "=r"(esp));
 	printf("TSS init\n");
 	tss_set_stack(0x10,esp);
-	printf("USER MODE!!!!!!1\n");
+	printf("Switch to user mode...\n");
 	arch_switchToUser();
 	//terminal_writestring("syscall\r\n");
 	//process_init();	

@@ -1,3 +1,4 @@
+void module_main();
 void _start() {
 	module_main();
 }
