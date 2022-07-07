@@ -2,5 +2,8 @@
 #define SYSCALL_H
 #include <typedefs.h>
 #include <x86/idt.h>
-void syscall_handler(int,int);
+struct arch_regs {
+	uint32_t edi,esi,ebp,esp,ebx,edx,ecx,eax,gs,fs,es,ds;
+};
+void syscall_handler(const struct arch_regs *regs);
 #endif

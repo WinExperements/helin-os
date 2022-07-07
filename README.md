@@ -9,12 +9,12 @@ Current list of features and released components:
 - [x] Global description table
 - [x] Interrupts
 - [x] Memory Management, PMM
-- [x] Multitasking(Bredan's multitasking see osdev wiki)
+- [x] [Multitasking](https://wiki.osdev.org/Brendan%27s_Multi-tasking_Tutorial)
 - [ ] Module Loading
 - [x] Multiboot structure loading
 - [x] User space [in this file](arch/x86/gdtfl.asm)
 - [x] Keyboard driver in user space
-- [x] Working syscall interface, bugs see in [TODO](#TODO)
+- [x] Working syscall interface
 
 # How to build?
 - Install any cross-compiler
@@ -25,5 +25,6 @@ Current list of features and released components:
 - Doesn't support EFI(GRUB problems)
 - Image creation(.iso) available only in linux
 # TODO
-- Fix passing arguments to syscall handler
+- Optimize the interruptsasm.asm file by removing the timer/keyboard/syscall specifics irq
 - Module and user program loading
+- Preempective or Cooperative multitasking
