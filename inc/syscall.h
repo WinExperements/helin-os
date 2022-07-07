@@ -2,7 +2,5 @@
 #define SYSCALL_H
 #include <typedefs.h>
 #include <x86/idt.h>
-void syscall_init();
-void syscall_handler();
-void syscall_call();
+void syscall_handler(registers_t *regs);
 #endif

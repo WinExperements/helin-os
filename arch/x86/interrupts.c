@@ -6,6 +6,7 @@
 #include <terminal.h>
 #include <arch.h>
 #include<syscall.h>
+#include<x86/pic.h>
 idt_entry_t idt_entries[256];
 idt_ptr_t idt_ptr;
 interrupt_handler_t interrupt_handlers[31];
@@ -59,8 +60,8 @@ void init_idt() {
   idt_set_gate( 31, (uint32_t)isr31 , 0x8, 0x8E);
 
   // Interrupts from 32 to 47 are reserved for the PIT
-  idt_set_gate(32 , (uint32_t)irq0 , 0x8 , 0x8E);
-  idt_set_gate(33 , (uint32_t)irq1 , 0x8 , 0x8E);
+  idt_set_gate(32 , (uint32_t)timer_irq , 0x8 , 0x8E);
+  idt_set_gate(33 , (uint32_t)keyboard_irq , 0x8 , 0x8E);
   idt_set_gate(34 , (uint32_t)irq2 , 0x8 , 0x8E);
   idt_set_gate(35 , (uint32_t)irq3 , 0x8 , 0x8E);
   idt_set_gate(36 , (uint32_t)irq4 , 0x8 , 0x8E);
@@ -75,7 +76,7 @@ void init_idt() {
   idt_set_gate(45 , (uint32_t)irq13 , 0x8 , 0x8E);
   idt_set_gate(46 , (uint32_t)irq14 , 0x8 , 0x8E);
   idt_set_gate(47 , (uint32_t)irq15 , 0x8 , 0x8E);
-   idt_set_gate(0x80,(uint32_t)syscall_irq,0x8,0x8E);
+  idt_set_gate(0x80,(uint32_t)syscall_irq,0x8,0x8E);
   idt_flush((uint32_t)&idt_ptr);
 }
 void idt_set_gate(uint8_t num,uint32_t base,uint16_t sel,uint8_t flags) {
@@ -86,7 +87,7 @@ void idt_set_gate(uint8_t num,uint32_t base,uint16_t sel,uint8_t flags) {
   idt_entries[num].always0 = 0;
   // We must uncomment the OR below when we get to using user-mode.
   // It sets the interrupt gate's privilege level to 3.
-  idt_entries[num].flags   = flags ;
+  idt_entries[num].flags   = flags | 0x60;
 }
 void isr_handler() {
   printf("Exception %d, error code: %x\n",isrNum,isrErrCode);
@@ -97,21 +98,18 @@ void irq_handler()
   printf("Interrupt IRQ: %d\n",irqNum);
   // Send the EOI signal to the Slave
   // Slave handles the Interrupt from 40 to 47
-  if(irqNum >= 40)
     io_writePort(PIC_SLAVE_COMMAND , 0x20);
 
   // Send Reset Signal to Master
   io_writePort(PIC_MASTER_COMMAND , 0x20);
 
   // if Interrupt is already registered
-  if (irqNum == 128) {
-	// syscall
-	syscall_handler(irqNum);
-  }
   if(interrupt_handlers[irqNum] != 0)
     {
       interrupt_handler_t handler = interrupt_handlers[irqNum];
       handler(irqNum,0x0);
+    } else {
+	write_serial('E');
     }
 }
 void interrupts_addHandler(uint8_t n, interrupt_handler_t handler)
@@ -120,9 +118,4 @@ void interrupts_addHandler(uint8_t n, interrupt_handler_t handler)
 }
 void interrupts_init() {
   init_idt();
-  asm volatile("sti");
-  printf("Interrupts are initialized!\n");
-}
-void interrupt_handler(int i,int err) {
-  printf("Interrupt: %d, error: %d",i,err);
 }

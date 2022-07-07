@@ -29,8 +29,6 @@ typedef struct registers
   uint32_t edx;
   uint32_t ecx;
   uint32_t eax;
-  // Interrupt number and error code (if applicable)
-  uint32_t int_no, err_code;
   // Pushed by the processor automatically
   uint32_t eip;
   uint32_t cs;

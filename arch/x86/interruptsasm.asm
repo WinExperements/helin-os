@@ -67,7 +67,13 @@ extern isr_handler
 ; and finally restores the stack frame.
 isr_common_stub:
   pusha
+  mov ax,ds
   push eax
+  mov ax,0x10
+  mov ds,ax
+  mov es,ax
+  mov fs,ax
+  mov gs,ax
   call isr_handler
   add esp,4
   popa
@@ -114,10 +120,15 @@ IRQ	15	,	47
 ;; Define irq_common_stub , similar to isr_common_stub
 irq_common_stub:
   pusha
+  mov eax,16
+  mov ds,ax
+  mov eax,0x20
+  out 0x20,al
   call irq_handler
   popa
   pop eax
   mov ds,ax
+  sti
   iret
 
    
@@ -131,5 +142,70 @@ idt_flush:
 [GLOBAL syscall_irq]
 extern syscall_handler
 syscall_irq:
+	cli
+  push ds
+  push es
+  push fs
+  push gs
+  pusha
+  mov ax, 0x10  ; load the kernel data segment descriptor
+  mov ds, ax
+  mov es, ax
+  mov fs, ax
+  mov gs, ax
+  push esp
+	call syscall_handler
+  add esp,4
+  popa
+  pop gs
+  pop fs
+  pop es
+  pop ds
+	sti
 	iret
-	
+[GLOBAL timer_irq]
+extern timer_handler
+timer_irq:
+	cli
+	pusha
+  mov ax,ds
+  push eax
+  mov ax, 0x10  ; load the kernel data segment descriptor
+  mov ds, ax
+  mov es, ax
+  mov fs, ax
+  mov gs, ax
+	mov eax,0x20
+  out 0x20,al
+	; Call C handler
+	call timer_handler
+  pop ebx
+   mov ds, bx
+    mov es, bx
+    mov fs, bx
+    mov gs, bx
+  popa
+	sti
+	iret
+[GLOBAL keyboard_irq]
+extern keyboard_handler
+keyboard_irq:
+	cli
+	mov ax,ds
+	pusha
+	push eax
+	; Switch the kernel data segment
+	mov ax,0x10
+	mov ds,ax
+	; Tell PIC for end of interrupt
+	mov eax,0x20
+	out 0x20,al
+	; Call C handler
+	call keyboard_handler
+	; Pop's all poped registers
+	pop eax
+	mov ds,ax
+	popa
+	; Return last data segment
+	sti
+	iret

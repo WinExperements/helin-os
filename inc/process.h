@@ -17,5 +17,5 @@ void process_delete(struct process *);
 void process_kill(int);
 void process_dump(struct process *);
 void process_yield();
-void process_test();
+void process_schedule();
 #endif

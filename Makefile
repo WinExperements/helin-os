@@ -18,6 +18,6 @@ makeiso:
 	cp kernel.bin iso/boot/grub
 	grub-mkrescue -o myos.iso iso
 runkernel:
-	"qemu-system-i386" -cpu 486 -kernel kernel.bin -serial stdio -m 256M -s -S
+	"qemu-system-i386" -cpu 486 -kernel kernel.bin -serial stdio -m 256M
 run:
 	qemu-system-i386 -cdrom myos.iso

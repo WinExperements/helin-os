@@ -6,4 +6,6 @@ void interrupts_init();
 void interrupts_addHandler(uint8_t,interrupt_handler_t handler);
 void interrupts_block();
 void interrupts_unblock();
+void interrupts_disable(uint8_t);
+void interrupts_enable(uint8);
 #endif
