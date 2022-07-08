@@ -9,7 +9,7 @@
 #include<x86/pic.h>
 idt_entry_t idt_entries[256];
 idt_ptr_t idt_ptr;
-interrupt_handler_t interrupt_handlers[31];
+isr_t interrupt_handlers[128];
 void init_idt() {
   idt_ptr.limit = sizeof(idt_entry_t) * 256 -1;
     idt_ptr.base  = (uint32_t)&idt_entries;
@@ -60,8 +60,8 @@ void init_idt() {
   idt_set_gate( 31, (uint32_t)isr31 , 0x8, 0x8E);
 
   // Interrupts from 32 to 47 are reserved for the PIT
-  idt_set_gate(32 , (uint32_t)timer_irq , 0x8 , 0x8E);
-  idt_set_gate(33 , (uint32_t)keyboard_irq , 0x8 , 0x8E);
+  idt_set_gate(32 , (uint32_t)irq0 , 0x8 , 0x8E);
+  idt_set_gate(33 , (uint32_t)irq1 , 0x8 , 0x8E);
   idt_set_gate(34 , (uint32_t)irq2 , 0x8 , 0x8E);
   idt_set_gate(35 , (uint32_t)irq3 , 0x8 , 0x8E);
   idt_set_gate(36 , (uint32_t)irq4 , 0x8 , 0x8E);
@@ -78,6 +78,7 @@ void init_idt() {
   idt_set_gate(47 , (uint32_t)irq15 , 0x8 , 0x8E);
   idt_set_gate(0x80,(uint32_t)syscall_irq,0x8,0x8E);
   idt_flush((uint32_t)&idt_ptr);
+  memset(interrupt_handlers,0,256);
 }
 void idt_set_gate(uint8_t num,uint32_t base,uint16_t sel,uint8_t flags) {
   idt_entries[num].base_lo = base & 0xFFFF;
@@ -93,9 +94,8 @@ void isr_handler() {
   printf("Exception %d, error code: %x\n",isrNum,isrErrCode);
   PANIC("CPU exception");
 }
-void irq_handler()
+void irq_handler(registers_t *regs)
 {
-  printf("Interrupt IRQ: %d\n",irqNum);
   // Send the EOI signal to the Slave
   // Slave handles the Interrupt from 40 to 47
     io_writePort(PIC_SLAVE_COMMAND , 0x20);
@@ -104,15 +104,17 @@ void irq_handler()
   io_writePort(PIC_MASTER_COMMAND , 0x20);
 
   // if Interrupt is already registered
-  if(interrupt_handlers[irqNum] != 0)
+  if (regs->int_no == 128) {
+    syscall_handler(regs);
+    return;
+  }
+  if(interrupt_handlers[regs->int_no] != 0)
     {
-      interrupt_handler_t handler = interrupt_handlers[irqNum];
-      handler(irqNum,0x0);
-    } else {
-	write_serial('E');
+      isr_t handler = interrupt_handlers[regs->int_no];
+      handler(regs);
     }
 }
-void interrupts_addHandler(uint8_t n, interrupt_handler_t handler)
+void interrupts_addHandler(uint8_t n, isr_t handler)
 {
   interrupt_handlers[n] = handler;
 }

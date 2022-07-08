@@ -30,14 +30,15 @@ typedef struct registers
   uint32_t ecx;
   uint32_t eax;
   // Pushed by the processor automatically
+  uint32_t int_no,error_code;
   uint32_t eip;
   uint32_t cs;
   uint32_t eflags;
   uint32_t useresp;
   uint32_t ss;
 } registers_t;
-typedef void (*isr_t)(registers_t);
+typedef void (*isr_t)(registers_t *);
 void isr_handler();
-void irq_handler();
+void irq_handler(registers_t *regs);
 void interrupt_handler(int,int);
 #endif

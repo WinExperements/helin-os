@@ -25,6 +25,5 @@ Current list of features and released components:
 - Doesn't support EFI(GRUB problems)
 - Image creation(.iso) available only in linux
 # TODO
-- Optimize the interruptsasm.asm file by removing the timer/keyboard/syscall specifics irq
 - Module and user program loading
 - Preempective or Cooperative multitasking

@@ -12,13 +12,15 @@
 #include <interrupts.h>
 #include <x86/gdt.h>
 extern uint64_t endkernel;
-extern void timer_handler() {
+/* Unused currently */
+void timer_handler(registers_t *regs) {
 	//printf("TIMER!!!\n");
 }
 extern void kernel_main(struct multiboot_info *multiboot,uint32_t magic) {
 	arch_init();	// Architecture initialization
 	printf("Helin OS kernel version 0.0.1 - User space and syscalls test\n");
 	printf("Kernel build date: 07.07.2022\n");
+	printf("Framebuffer width: %d,height: %d, bpp: %d, address: %x\n",multiboot->framebuffer_width,multiboot->framebuffer_height,multiboot->framebuffer_bpp,multiboot->framebuffer_addr);
 	if (magic != 0x2BADB002)
 	{
 		PANIC("Invalid multiboot!");
@@ -63,4 +65,5 @@ extern void kernel_main(struct multiboot_info *multiboot,uint32_t magic) {
 	int num = 1;
 	char *p1 = "Hello from user space\n";
 	asm volatile("int $0x80" : "=a" (a) : "0" (num), "b" ((int)p1));
+	asm volatile("int $34");
 }

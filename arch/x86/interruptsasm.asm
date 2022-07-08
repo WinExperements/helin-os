@@ -89,9 +89,8 @@ extern irqNum
   [GLOBAL irq%1]  ; Use the First Parameter
   irq%1:
     cli
-    push eax
-    mov eax,%2
-    mov [irqNum],eax
+    push byte 0
+    push byte %2
     jmp irq_common_stub
 %endmacro
 
@@ -119,19 +118,26 @@ IRQ	15	,	47
 
 ;; Define irq_common_stub , similar to isr_common_stub
 irq_common_stub:
-  pusha
-  mov eax,16
-  mov ds,ax
-  mov eax,0x20
-  out 0x20,al
-  call irq_handler
-  popa
-  pop eax
-  mov ds,ax
-  sti
-  iret
-
-   
+  pusha                    ; Pushes edi,esi,ebp,esp,ebx,edx,ecx,eax
+    mov ax, ds               ; Lower 16-bits of eax = ds.
+    push eax                 ; save the data segment descriptor
+    mov ax, 0x10  ; load the kernel data segment descriptor
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    push esp
+    call irq_handler
+    add esp,4
+    pop ebx        ; reload the original data segment descriptor
+    mov ds, bx
+    mov es, bx
+    mov fs, bx
+    mov gs, bx
+    popa                     ; Pops edi,esi,ebp...
+    add esp, 8     ; Cleans up the pushed error code and pushed ISR number
+    sti
+    iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
 [GLOBAL idt_flush]
 
 idt_flush:
@@ -142,70 +148,6 @@ idt_flush:
 [GLOBAL syscall_irq]
 extern syscall_handler
 syscall_irq:
-	cli
-  push ds
-  push es
-  push fs
-  push gs
-  pusha
-  mov ax, 0x10  ; load the kernel data segment descriptor
-  mov ds, ax
-  mov es, ax
-  mov fs, ax
-  mov gs, ax
-  push esp
-	call syscall_handler
-  add esp,4
-  popa
-  pop gs
-  pop fs
-  pop es
-  pop ds
-	sti
-	iret
-[GLOBAL timer_irq]
-extern timer_handler
-timer_irq:
-	cli
-	pusha
-  mov ax,ds
-  push eax
-  mov ax, 0x10  ; load the kernel data segment descriptor
-  mov ds, ax
-  mov es, ax
-  mov fs, ax
-  mov gs, ax
-	mov eax,0x20
-  out 0x20,al
-	; Call C handler
-	call timer_handler
-  pop ebx
-   mov ds, bx
-    mov es, bx
-    mov fs, bx
-    mov gs, bx
-  popa
-	sti
-	iret
-[GLOBAL keyboard_irq]
-extern keyboard_handler
-keyboard_irq:
-	cli
-	mov ax,ds
-	pusha
-	push eax
-	; Switch the kernel data segment
-	mov ax,0x10
-	mov ds,ax
-	; Tell PIC for end of interrupt
-	mov eax,0x20
-	out 0x20,al
-	; Call C handler
-	call keyboard_handler
-	; Pop's all poped registers
-	pop eax
-	mov ds,ax
-	popa
-	; Return last data segment
-	sti
-	iret
+	push 0
+  push 128
+  jmp irq_common_stub

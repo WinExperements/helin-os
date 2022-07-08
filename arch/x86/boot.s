@@ -19,7 +19,7 @@ forced to be within the first 8 KiB of the kernel file.
 .long CHECKSUM
 .long 0,0,0,0,0
 .long 0
-.long 1024,768
+.long 800,640
 
 .section .bss
 .align 16

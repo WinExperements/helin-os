@@ -82,6 +82,4 @@ extern int isr0();
   extern int irq14();
   extern int irq15();
   extern int syscall_irq();
-  extern int timer_irq();
-  extern int keyboard_irq();
  #endif

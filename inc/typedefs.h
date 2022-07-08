@@ -64,6 +64,15 @@ struct multiboot_info {
 	unsigned long vbe_interface_seg;
 	unsigned long vbe_interface_off;
 	unsigned long vbe_interface_len;
+	uint64_t framebuffer_addr;
+  	uint32_t framebuffer_pitch;
+  	uint32_t framebuffer_width;
+ 	uint32_t framebuffer_height;
+  	uint8_t framebuffer_bpp;
+  	#define FRAMEBUFFER_TYPE_INDEXED 0
+	#define FRAMEBUFFER_TYPE_RGB     1
+	#define FRAMEBUFFER_TYPE_EGA_TEXT     2
+  	uint8_t framebuffer_type;
 };
 // OSDEV Wiki: Detecting memory(x86)
 typedef struct memory_entry {

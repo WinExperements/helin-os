@@ -5,8 +5,9 @@
 #include <x86/idt.h>
 #include <terminal.h>
 #include<x86/pic.h>
-extern void keyboard_handler();
+void keyboard_handler(registers_t *regs);
 void keyboard_init() {
+    interrupts_addHandler(33,keyboard_handler);
 	unsigned char kbb = 0;
    	while(((kbb = io_readPort(0x64)) & 1) == 1)
    	{
@@ -22,7 +23,7 @@ void keyboard_init() {
 	io_writePort(0x60,status);
 	io_writePort(0x60,0xf4);
 }
-void keyboard_handler() {
+void keyboard_handler(registers_t *regs) {
 	uint8_t key = io_readPort(0x60);
 	if (key < 0x80)
 	{
