@@ -94,7 +94,7 @@ void isr_handler() {
   printf("Exception %d, error code: %x\n",isrNum,isrErrCode);
   PANIC("CPU exception");
 }
-void irq_handler(registers_t *regs)
+int irq_handler(registers_t *regs)
 {
   // Send the EOI signal to the Slave
   // Slave handles the Interrupt from 40 to 47
@@ -106,13 +106,14 @@ void irq_handler(registers_t *regs)
   // if Interrupt is already registered
   if (regs->int_no == 128) {
     syscall_handler(regs);
-    return;
+    return (int)regs;
   }
   if(interrupt_handlers[regs->int_no] != 0)
     {
       isr_t handler = interrupt_handlers[regs->int_no];
       handler(regs);
     }
+    return (int)regs;
 }
 void interrupts_addHandler(uint8_t n, isr_t handler)
 {

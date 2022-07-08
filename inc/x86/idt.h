@@ -39,6 +39,6 @@ typedef struct registers
 } registers_t;
 typedef void (*isr_t)(registers_t *);
 void isr_handler();
-void irq_handler(registers_t *regs);
+int irq_handler(registers_t *regs);
 void interrupt_handler(int,int);
 #endif

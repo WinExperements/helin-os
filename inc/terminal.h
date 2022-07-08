@@ -13,4 +13,5 @@ int terminal_getX();
 int terminal_getY();
 int terminal_getBufferAddress();
 void terminal_clearWithColor(uint8_t back,uint8_t cursor);
+void terminal_clear();
 #endif

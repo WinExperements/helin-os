@@ -2,6 +2,7 @@
 #define PROCESS_H
 #include<typedefs.h>
 #include<mm/vmm.h>
+#include <x86/idt.h>
 #define PROCESS_STACK_INIT  0xfffffff0
 struct process {
 	int stack;
@@ -18,4 +19,5 @@ void process_kill(int);
 void process_dump(struct process *);
 void process_yield();
 void process_schedule();
+void process_test();
 #endif

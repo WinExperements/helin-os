@@ -129,6 +129,7 @@ irq_common_stub:
     push esp
     call irq_handler
     add esp,4
+    mov eax,esp
     pop ebx        ; reload the original data segment descriptor
     mov ds, bx
     mov es, bx

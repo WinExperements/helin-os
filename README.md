@@ -26,4 +26,5 @@ Current list of features and released components:
 - Image creation(.iso) available only in linux
 # TODO
 - Module and user program loading
-- Preempective or Cooperative multitasking
+- Improve the multitasking methods, add support to currently defined but not writen methods in [process.h](inc/process.h)
+- More kernel parameters

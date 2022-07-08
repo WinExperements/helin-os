@@ -8,6 +8,7 @@ arch_getVirtualAddress:
     mov eax,cr3
     ret
 arch_switchTask:
+    cli
     push ebx
     push esi
     push edi
@@ -25,4 +26,5 @@ arch_switchTask:
     pop         edi
     pop         esi
     pop         ebx
+    sti
     ret

@@ -9,4 +9,6 @@ void panic(char *file,const char *funcName,const char *msg);
 void arch_switchTask(struct process *);
 uint64_t arch_getVirtualAddress();
 void arch_switchToUser();
+/* Create a stack for a process */
+uint32_t arch_createProcessStack();
 #endif

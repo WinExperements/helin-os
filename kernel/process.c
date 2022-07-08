@@ -6,12 +6,19 @@
 #define PUSH(tos,val) (*(--tos) = val)
 struct process *runningTask;
 struct process processList[1024];
-int taskPidNext = 0;
+int taskPidNext = 1;
 int tasks;
+bool initExit;
 void process_startup();
 void process_addReady(struct process *prc);
 void test() {
-	while(1) {printf("A");}
+	int result;
+	int call = 1;
+	char *msg = "Hello from first program\n";
+	asm volatile("int $0x80" : "=a" (result) : "0" (call), "b" ((int)msg));
+	// now return
+	initExit = true;
+	asm volatile("int $32");	// call timer and set the init exit flag here
 }
 void test2() {
 	while(1) {printf("B");}
@@ -40,7 +47,7 @@ struct process *process_create(void (*entryPoint)()) {
 	PUSH(stack,0);
 	PUSH(stack,0);
 	PUSH(stack,0);
-	prc->stack = stack;
+	prc->stack = (uint32_t)stack;
 	// Because we need to rewrite VMM code, don't use it
 	prc->virtAddr = arch_getVirtualAddress();
 	asm volatile("cli");
@@ -61,7 +68,6 @@ void process_init() {
 	runningTask = &processList[0];
 	process_create(test);
 	process_create(test2);
-	printf("[process]: initialize done\n");
 }
 void process_dump(struct process *pr) {
 	printf("Process %d dump\nPID: %d\nVMM address: %x\nRegisters address: %x\nEnd of dump\n",pr->pid,pr->pid,pr->virtAddr,pr->stack);
@@ -84,4 +90,11 @@ void process_addReady(struct process *prc) {
 	prc->next = NULL;
 	processList[taskPidNext++] = *prc;
 	tasks++;
+}
+void process_test() {
+	if (!initExit) {
+		arch_switchTask(&processList[1]);
+	} else {
+		arch_switchTask(&processList[0]);
+	}
 }
