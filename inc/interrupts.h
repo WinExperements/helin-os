@@ -1,7 +1,7 @@
 #ifndef INTERRUPTS_H
 #define INTERRUPTS_H
 #include "typedefs.h"
-#include <x86\idt.h>
+#include <x86/idt.h>
 void interrupts_init();
 void interrupts_addHandler(uint8_t,isr_t handler);
 void interrupts_block();

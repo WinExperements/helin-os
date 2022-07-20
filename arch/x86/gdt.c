@@ -1,5 +1,6 @@
 #include <x86/gdt.h>
 #include<serial.h>
+#include<mm.h>
 gdt_entry_t gdt_entries[6];
 gdt_ptr_t   gdt_ptr;
 tss_entry_t tss_entry;

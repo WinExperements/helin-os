@@ -9,6 +9,7 @@ uint8_t cursor_y;
 int initialized;
 uint8_t color;
 uint8_t background;
+bool replay;
 void terminal_clear();
 void terminal_initialize() {
 	cursor_x = cursor_y = 0;
@@ -96,6 +97,9 @@ void putc(char ch,uint8_t back,uint8_t color) {
     }
 
   // Scroll , or move the Cursor If Needed
+  if (false) {
+	write_serial(ch);
+  }
   scroll();
   movecursor();
 }
@@ -213,4 +217,23 @@ void terminal_clearWithColor(uint8_t back,uint8_t cursor) {
 	cursor_x = 0;
 	cursor_y = 0;
 	movecursor();
+}
+void printf_syscall(const char *msg) {
+	int res;
+	int num = 1;
+	asm volatile("int $0x80" : "=a" (res) : "0" (num), "b" ((int)msg));
+}
+void terminal_enableReplay(bool enable) {
+	// Does we need to enable the replay to serial(Debug)
+	replay = enable;
+}
+void terminal_writeXY(char c,uint8_t x,uint8_t y) {
+	// very simple function
+	int ox = cursor_x;
+	int oy = cursor_y;
+	cursor_x = x;
+	cursor_y = y;
+	putc(c,background,color);
+	cursor_x = ox;
+	cursor_y = oy;
 }

@@ -14,4 +14,7 @@ int terminal_getY();
 int terminal_getBufferAddress();
 void terminal_clearWithColor(uint8_t back,uint8_t cursor);
 void terminal_clear();
+void printf_syscall(const char *);
+void terminal_enableReplay(bool enable);
+void terminal_writeXY(char c,uint8_t x,uint8_t y);
 #endif

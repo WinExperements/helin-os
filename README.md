@@ -9,7 +9,7 @@ Current list of features and released components:
 - [x] Global description table
 - [x] Interrupts
 - [x] Memory Management, PMM
-- [x] [Multitasking](https://wiki.osdev.org/Brendan%27s_Multi-tasking_Tutorial)
+- [x] Multitasking
 - [ ] Module Loading
 - [x] Multiboot structure loading
 - [x] User space [in this file](arch/x86/gdtfl.asm)
@@ -28,3 +28,9 @@ Current list of features and released components:
 - Module and user program loading
 - Improve the multitasking methods, add support to currently defined but not writen methods in [process.h](inc/process.h)
 - More kernel parameters
+- Add the VGA support
+# Changelog
+## Updated Mulitasking
+- I added the context switch and combinate the kernel mode tasks and user mode
+- Added more tests, like two user mode tasks and one kernel mode task
+- I fix the problem with multitasking that i write [here](https://forum.osdev.org/viewtopic.php?f=1&t=56362)  

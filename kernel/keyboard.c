@@ -74,9 +74,16 @@ void keyboard_handler(registers_t *regs) {
 
             case 0x1C: printf("\n"); break;
             case 0x39: printf(" "); break;
-
+            case 0xe: {
+                terminal_writeXY(' ',terminal_getX(),terminal_getY());
+            } break;
+            case 0x38: {
+                terminal_clearWithColor(BLUE,WHITE);
+                printf("Cleared with ALT key\n");
+            } break;
             default:
             {
+		printf("Unknown key: %x\n",key);
                 break;
             }
 	}

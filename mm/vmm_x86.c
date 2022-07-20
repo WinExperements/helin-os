@@ -40,7 +40,7 @@ void vmm_init() {
     interrupts_addHandler(14,vmm_pfault);
    	//asm("int $0x14");
 }
-void vmm_pfault(int i,int err) {
+void vmm_pfault(registers_t *regs) {
 	PANIC("PAGE FAULT!");
 }
 void vmm_enable() {

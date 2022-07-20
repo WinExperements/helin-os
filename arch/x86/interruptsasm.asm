@@ -88,7 +88,6 @@ extern irqNum
 %macro IRQ 2
   [GLOBAL irq%1]  ; Use the First Parameter
   irq%1:
-    cli
     push byte 0
     push byte %2
     jmp irq_common_stub
@@ -118,26 +117,37 @@ IRQ	15	,	47
 
 ;; Define irq_common_stub , similar to isr_common_stub
 irq_common_stub:
-  pusha                    ; Pushes edi,esi,ebp,esp,ebx,edx,ecx,eax
-    mov ax, ds               ; Lower 16-bits of eax = ds.
-    push eax                 ; save the data segment descriptor
+    push eax
+    push ecx
+    push edx
+    push ebx
+    push ebp
+    push esi
+    push edi
+    mov ax,ds
+    push eax
     mov ax, 0x10  ; load the kernel data segment descriptor
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
+    mov ds, eax
+    mov es, eax
+    mov fs, eax
+    mov gs, eax
     push esp
     call irq_handler
     add esp,4
-    mov eax,esp
-    pop ebx        ; reload the original data segment descriptor
-    mov ds, bx
-    mov es, bx
-    mov fs, bx
-    mov gs, bx
-    popa                     ; Pops edi,esi,ebp...
+    mov esp,eax
+    pop ebx
+    mov ds, ebx
+    mov es, ebx
+    mov fs, ebx
+    mov gs, ebx
+    pop edi
+    pop esi
+    pop ebp
+    pop ebx
+    pop edx
+    pop ecx
+    pop eax
     add esp, 8     ; Cleans up the pushed error code and pushed ISR number
-    sti
     iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
 [GLOBAL idt_flush]
 
@@ -150,5 +160,44 @@ idt_flush:
 extern syscall_handler
 syscall_irq:
 	push 0
-  push 128
-  jmp irq_common_stub
+ 	push 128
+ 	jmp irq_common_stub
+[GLOBAL scheduler_irq]
+extern process_schedule
+extern runningTask
+extern panic
+scheduler_irq:
+	pusha
+  push ds
+  push es
+  push fs
+  push gs
+	mov ax,0x10
+	mov ds,ax
+	mov es,ax
+	mov fs,ax
+	mov gs,ax
+  push esp
+	call process_schedule
+  cmp eax,0
+  jz _scheduler_error
+  mov esp,eax
+  pop gs
+  pop fs
+  pop es
+  pop ds
+	_scheduler_exit:
+	mov al,0x20
+	out 0x20,al
+  popa
+	iret
+  _scheduler_error:
+  push _schedulerError
+  push _schedulerName
+  push _schedulerFile
+  call panic
+
+section .data
+_schedulerError db "Returned stack null",0
+_schedulerName db "scheduler_irq",0
+_schedulerFile db "interruptsasm.asm",0

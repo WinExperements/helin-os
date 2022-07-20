@@ -1,7 +1,7 @@
 /* Declare constants for the multiboot header. */
 .set ALIGN,    1<<0             /* align loaded modules on page boundaries */
 .set MEMINFO,  1<<1             /* provide memory map */
-.set FLAGS,    ALIGN | MEMINFO  /* this is the Multiboot 'flag' field */
+.set FLAGS,    ALIGN | MEMINFO /* this is the Multiboot 'flag' field */
 .set MAGIC,    0x1BADB002       /* 'magic number' lets bootloader find the header */
 .set CHECKSUM, -(MAGIC + FLAGS) /* checksum of above, to prove we are multiboot */
  
@@ -17,10 +17,16 @@ forced to be within the first 8 KiB of the kernel file.
 .long MAGIC
 .long FLAGS
 .long CHECKSUM
-.long 0,0,0,0,0
+/*.long 0
 .long 0
-.long 800,640
-
+.long 0
+.long 0
+.long 0
+.long 0 # Set to 0 to enable framebuffer by default, 1 to disable
+.long 640 # Number of horizontal pixels
+.long 480 # Number of vertical pixels
+.long 32 # Bit depth
+*/
 .section .bss
 .align 16
 stack_bottom:
@@ -33,9 +39,7 @@ stack_top:
 .type _start, @function
 _start:
 	mov $stack_top, %esp
- 
-    push %eax
-    push %ebx
+	pushl %ebx
 	call kernel_main
 1:
 	jmp 1b

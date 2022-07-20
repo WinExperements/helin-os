@@ -60,7 +60,7 @@ void init_idt() {
   idt_set_gate( 31, (uint32_t)isr31 , 0x8, 0x8E);
 
   // Interrupts from 32 to 47 are reserved for the PIT
-  idt_set_gate(32 , (uint32_t)irq0 , 0x8 , 0x8E);
+  idt_set_gate(32 , (uint32_t)scheduler_irq , 0x8 , 0x8E);
   idt_set_gate(33 , (uint32_t)irq1 , 0x8 , 0x8E);
   idt_set_gate(34 , (uint32_t)irq2 , 0x8 , 0x8E);
   idt_set_gate(35 , (uint32_t)irq3 , 0x8 , 0x8E);

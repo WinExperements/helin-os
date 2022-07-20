@@ -44,17 +44,32 @@ void write_serialString(const char *c) {
 	}
 	//terminal_writestring(c);
 }
-void write_serialHex(int u) {
-	char *foo = "00";
-	char *hex = "0123456789ABCDEF";
-	foo[0] = hex[(u >> 4) & 0x4];
-	foo[1] = hex[u & 0x4];
-	write_serialString(foo);
-	//terminal_writestring(foo);
+void write_serialHex(int num) {
+	uint32_t tmp;
+	write_serialString("0x");
+	char noZeroes = 1;
+	int i;
+	for (i = 28; i > 0; i-=4) {
+		tmp = (num >> i) & 0xF;
+		if (tmp == 0 && noZeroes != 0) continue;
+		if (tmp >= 0xA) {
+			noZeroes = 0;
+			write_serial(tmp-0xA+'a');
+		} else {
+			noZeroes = 0;
+			write_serial(tmp+'0');
+		}
+	}
+	tmp = num & 0xF;
+	if (tmp >= 0xA) {
+		write_serial(tmp-0xA+'a');
+	} else {
+		write_serial(tmp+'0');
+	}
 }
 void write_serialInt(int u) {
 	if (u == 0) {
-		terminal_writestring("0");
+		write_serialString("0");
 		return;
 	}
 	s32 acc = u;

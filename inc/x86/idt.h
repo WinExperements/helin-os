@@ -24,7 +24,6 @@ typedef struct registers
   uint32_t edi;
   uint32_t esi;
   uint32_t ebp;
-  uint32_t esp;
   uint32_t ebx;
   uint32_t edx;
   uint32_t ecx;
@@ -36,7 +35,7 @@ typedef struct registers
   uint32_t eflags;
   uint32_t useresp;
   uint32_t ss;
-} registers_t;
+}  registers_t;
 typedef void (*isr_t)(registers_t *);
 void isr_handler();
 int irq_handler(registers_t *regs);

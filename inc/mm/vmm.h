@@ -44,5 +44,5 @@ struct page_table_entry_t {
 
 void vmm_init();
 void vmm_enable();
-void vmm_pfault(int i,int err);
+void vmm_pfault(registers_t *regs);
 #endif

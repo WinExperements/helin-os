@@ -13,14 +13,12 @@ bool is_block_used(uint64_t blkN);
 void ppml_init(struct multiboot_info *info,uint32_t bitmapAddr)
 {
 	main_memory_size = 0;
-	uint64_t memaddr = 0;
 	unsigned long i;
 	for (i = 0; i < info->mmap_length; i+=sizeof(memory_entry))
 	{
 		memory_entry *en = (memory_entry *)(info->mmap_addr+i);
 		if (en->type == 1 && en->len > main_memory_size) {
 			main_memory_size = en->len;
-			memaddr = en->addr;
 		}
 	}
 	uint32_t memF = (main_memory_size)/PHYS_PAGE_SIZE;

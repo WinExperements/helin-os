@@ -82,4 +82,5 @@ extern int isr0();
   extern int irq14();
   extern int irq15();
   extern int syscall_irq();
+  extern void scheduler_irq();
  #endif

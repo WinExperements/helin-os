@@ -31,6 +31,7 @@ arch_switchToUser:
     push 0x1b
     lea eax, [user_start]
     push eax
+    sti
     iretd
 user_start:
     add esp, 4
